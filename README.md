@@ -90,18 +90,32 @@ Hyprspin now uses Lua for configuration, allowing for dynamic logic. The daemon 
 ### Example
 
 ```lua
+local PORTRAIT_MODES = { ["left-up"] = true, ["right-up"] = true }
+
 function on_spin(ctx)
-    if ctx.orientation == "left-up" or ctx.orientation == "right-up" then
+    if not ctx.monitor:find("eDP") then 
+        return {} 
+    end
+
+    if ctx.orientation == "normal" then
         return {
-            { action = "exec", args = "wvkbd-mobintl" },
-            { action = "togglespecialworkspace" }
+            { action = "keyword", args = "general:layout dwindle" }
         }
     end
 
-    return {
-        { action = "exec", args = "killall wvkbd-mobintl" },
-        { action = "workspace", args = "+0" }
-    }
+    if PORTRAIT_MODES[ctx.orientation] then
+        return {
+            { action = "keyword", args = "general:layout master" }
+        }
+    end
+
+    if ctx.orientation == "bottom-up" then
+        return {
+            { action = "exec", args = "notify-send 'Orientation' 'Inverted (Tent Mode)'" }
+        }
+    end
+
+    return {}
 end
 ```
 

@@ -7,14 +7,12 @@ function on_spin(ctx)
 
     if ctx.orientation == "normal" then
         return {
-            { action = "exec", args = "sh ~/.config/hypr/scripts/laptop-mode.sh" },
             { action = "keyword", args = "general:layout dwindle" }
         }
     end
 
     if PORTRAIT_MODES[ctx.orientation] then
         return {
-            { action = "exec", args = "sh ~/.config/hypr/scripts/tablet-mode.sh" },
             { action = "keyword", args = "general:layout master" }
         }
     end
